@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Робот на зміні — автоматизація бізнесу та ШІ-боти</title>
+<meta name="description" content="Автоматизуємо заявки, записи та рутину: ШІ-боти в Telegram, Instagram і Viber, інтеграції з CRM, сценарії в n8n і Make. Безкоштовний аудит.">
+<meta property="og:title" content="Робот на зміні — автоматизація для бізнесу">
+<meta property="og:description" content="Поки ви відпочиваєте, робот працює. ШІ-боти, CRM-інтеграції та автоматизація процесів.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#15171A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2315171A'/%3E%3Cg fill='none' stroke='%23FF6B1A' stroke-width='1.8' stroke-linecap='round'%3E%3Crect x='5' y='9' width='14' height='10' rx='3'/%3E%3Cpath d='M12 9V5.5'/%3E%3C/g%3E%3Ccircle cx='9.5' cy='14' r='1.2' fill='%23FF6B1A'/%3E%3Ccircle cx='14.5' cy='14' r='1.2' fill='%23FF6B1A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  :root{
+    --accent:#FF6B1A; --ink:#15171A; --ground:#F5F5F2; --ground-2:#ECECE6;
+    --line:#DEDED8; --muted:#3B3F45; --muted-2:#4A4F57;
+    --dark-line:#2E3238; --dark-muted:#A3A9B3; --dark-text:#C9CDD3;
+    --display:Unbounded, system-ui, sans-serif; --mono:'JetBrains Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:Manrope, system-ui, sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  img,svg{display:block}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+  h1,h2,h3,p{margin:0}
+  h2{font-family:var(--display);font-weight:700;font-size:clamp(28px,3.6vw,46px);letter-spacing:-.02em;line-height:1.1}
+  .lead{font-size:19px;color:var(--muted)}
+  .mono{font-family:var(--mono);font-size:14px}
+  .section{padding-top:104px;padding-bottom:104px}
+  .stack{display:flex;flex-direction:column}
+  .row{display:flex;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 28px;border-radius:999px;font-weight:700;font-size:17px;text-decoration:none;border:1.5px solid transparent;cursor:pointer;font-family:inherit;transition:transform .15s ease, background .15s ease}
+  .btn:hover{transform:translateY(-1px)}
+  .btn:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  .btn-accent{background:var(--accent);color:var(--ink)}
+  .btn-ghost{border-color:var(--ink);color:var(--ink)}
+  .btn-dark{background:var(--ink);color:var(--ground);min-height:44px;padding:0 20px;font-size:15px}
+  .pill{display:inline-block;font-family:var(--mono);font-size:13px;padding:4px 10px;border-radius:999px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:12px}
+  .card p{color:var(--muted)}
+  .card.dark{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+  .card.dark p{color:var(--dark-text)}
+
+  /* header */
+  header{border-bottom:1px solid var(--line);background:var(--ground);position:sticky;top:0;z-index:10}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .logo-mark{width:40px;height:40px;border-radius:10px;background:var(--ink);display:flex;align-items:center;justify-content:center}
+  .logo-text{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.01em}
+  .nav-links{display:flex;align-items:center;gap:28px;font-weight:500;font-size:15px}
+  .nav-links a{text-decoration:none}
+  .nav-links a:not(.btn):hover{color:var(--muted-2)}
+
+  /* hero */
+  .hero{padding-top:88px;padding-bottom:96px;display:flex;flex-wrap:wrap;align-items:center;gap:56px}
+  .hero-copy{flex:1 1 520px;min-width:0;gap:28px}
+  .status{display:flex;align-items:center;gap:10px;color:var(--muted-2)}
+  .dot{width:10px;height:10px;border-radius:50%;background:#1F9D55;box-shadow:0 0 0 0 rgba(31,157,85,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,157,85,.5)}70%{box-shadow:0 0 0 10px rgba(31,157,85,0)}100%{box-shadow:0 0 0 0 rgba(31,157,85,0)}}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(36px,5.4vw,68px);line-height:1.05;letter-spacing:-.03em}
+  .hero-sub{font-size:20px;color:var(--muted);max-width:560px}
+  .log{flex:1 1 400px;min-width:0;background:var(--ink);color:var(--ground);border-radius:24px;padding:28px;gap:18px}
+  .log-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .log-title{font-family:var(--display);font-size:16px;font-weight:500}
+  .log ul{list-style:none;margin:0;padding:0;font-family:var(--mono);font-size:14px}
+  .log li{display:flex;gap:16px;padding:14px 0;border-top:1px solid var(--dark-line);opacity:0;transform:translateY(6px);animation:in .5s ease forwards}
+  .log li:last-child{border-bottom:1px solid var(--dark-line)}
+  .log li span:first-child{color:var(--dark-muted);flex:0 0 48px}
+  .log li:nth-child(1){animation-delay:.2s}.log li:nth-child(2){animation-delay:.5s}.log li:nth-child(3){animation-delay:.8s}.log li:nth-child(4){animation-delay:1.1s}.log li:nth-child(5){animation-delay:1.4s}
+  @keyframes in{to{opacity:1;transform:none}}
+  .log-foot{font-size:14px;color:var(--dark-muted)}
+
+  .strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--ground-2)}
+  .strip .wrap{padding-top:22px;padding-bottom:22px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 32px;font-weight:700;color:var(--muted)}
+  .strip .mono{font-size:13px;color:var(--muted-2);font-weight:500}
+
+  .grid-cards{display:flex;flex-wrap:wrap;gap:20px}
+  .grid-cards > *{flex:1 1 300px;min-width:0}
+  .services > *{flex-basis:460px;padding:36px;border-radius:24px;gap:16px}
+  .services h3{font-family:var(--display);font-weight:500;font-size:24px}
+  .card h3{font-size:21px;font-weight:700}
+  .services .card h3{font-size:24px}
+
+  .how{background:var(--ink);color:var(--ground)}
+  .steps{display:flex;flex-wrap:wrap;gap:32px}
+  .step{flex:1 1 230px;min-width:0;display:flex;flex-direction:column;gap:12px;border-top:2px solid var(--accent);padding-top:20px}
+  .step .mono{color:var(--dark-muted)}
+  .step h3{font-size:22px}
+  .step p{color:var(--dark-text)}
+
+  .case-result{font-family:var(--display);font-size:26px;font-weight:700}
+  .price{font-family:var(--display);font-size:30px;font-weight:700}
+
+  .faq{display:flex;flex-wrap:wrap;gap:48px}
+  .faq h2{flex:1 1 300px;min-width:0}
+  .faq-list{flex:2 1 560px;min-width:0}
+  details{border-top:1px solid var(--line)}
+  details:last-child{border-bottom:1px solid var(--line)}
+  summary{list-style:none;cursor:pointer;padding:22px 0;font-size:19px;font-weight:700;display:flex;justify-content:space-between;gap:16px;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:var(--mono);font-size:22px;transition:transform .2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{padding:0 0 22px;color:var(--muted);max-width:640px}
+
+  .contact{background:var(--accent)}
+  .contact-inner{display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start}
+  .contact-copy{flex:1 1 420px;min-width:0;gap:20px}
+  .contact h2{font-size:clamp(30px,4vw,52px)}
+  .contact-copy p{font-size:19px}
+  .contacts{gap:6px;font-weight:700}
+  form{flex:1 1 440px;min-width:0;background:var(--ink);color:var(--ground);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:18px}
+  .field{display:flex;flex-direction:column;gap:8px}
+  label{font-size:15px;font-weight:500}
+  label .req{color:var(--accent)}
+  input,textarea{font:inherit;font-size:16px;padding:14px 16px;border-radius:12px;border:1px solid #3A3F46;background:#22252A;color:var(--ground);width:100%}
+  input::placeholder,textarea::placeholder{color:#8D939C}
+  textarea{resize:vertical;min-height:96px}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .form-status{font-size:15px;min-height:1.5em}
+  .form-status.ok{color:#5FE3A1}
+  .form-status.err{color:#FFB38A}
+  .form-note{font-size:13px;color:var(--dark-muted)}
+  button[disabled]{opacity:.6;cursor:wait;transform:none}
+
+  footer{background:var(--ink);color:var(--dark-muted)}
+  footer .wrap{padding-top:32px;padding-bottom:32px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:14px}
+  footer .logo-text{color:var(--ground);font-size:15px}
+
+  @media (max-width:860px){
+    .nav-links a:not(.btn){display:none}
+    .section{padding-top:72px;padding-bottom:72px}
+    .hero{padding-top:56px;padding-bottom:64px;gap:40px}
+    .services > *{padding:28px}
+    form{padding:24px}
+  }
+  @media (max-width:420px){
+    .btn-dark{padding:0 14px;font-size:14px}
+    .logo-text{font-size:15px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .dot,.log li{animation:none;opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo" aria-label="Робот на зміні — на початок">
+      <span class="logo-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4"/><circle cx="12" cy="3" r="1"/><circle cx="9" cy="14" r="1.2"/><circle cx="15" cy="14" r="1.2"/></svg>
+      </span>
+      <span class="logo-text">Робот на зміні</span>
+    </a>
+    <nav class="nav-links" aria-label="Основне меню">
+      <a href="#services">Послуги</a>
+      <a href="#how">Як працюємо</a>
+      <a href="#cases">Кейси</a>
+      <a href="#prices">Ціни</a>
+      <a href="#contact" class="btn btn-dark">Консультація</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section id="top" class="wrap hero">
+    <div class="hero-copy stack">
+      <div class="status mono"><span class="dot" aria-hidden="true"></span><span>НА ЗМІНІ 24/7 · БЕЗ ВИХІДНИХ</span></div>
+      <h1>Поки ви відпочиваєте, робот працює</h1>
+      <p class="hero-sub">Автоматизуємо заявки, записи та рутину: ШІ-боти в месенджерах, інтеграції з CRM і таблицями, сценарії, що працюють самі. Ви займаєтесь бізнесом, решту бере на себе робот.</p>
+      <div class="row" style="gap:12px">
+        <a href="#contact" class="btn btn-accent">Отримати безкоштовний аудит</a>
+        <a href="#services" class="btn btn-ghost">Що вміє робот</a>
+      </div>
+    </div>
+
+    <div class="log stack" aria-label="Приклад журналу зміни робота">
+      <div class="log-head">
+        <span class="log-title">Журнал зміни</span>
+        <span class="pill" style="background:var(--accent);color:var(--ink)">приклад</span>
+      </div>
+      <ul>
+        <li><span>08:02</span><span>Відповів на 3 питання про ціни в Instagram</span></li>
+        <li><span>13:40</span><span>Записав клієнта на п’ятницю, 15:00</span></li>
+        <li><span>18:25</span><span>Створив ТТН Нової пошти для замовлення</span></li>
+        <li><span>21:17</span><span>Нова заявка з сайту → додав у CRM</span></li>
+        <li><span>02:55</span><span>Нагадав клієнту про завтрашній візит</span></li>
+      </ul>
+      <p class="log-foot">Так виглядає звичайна доба, коли рутина автоматизована.</p>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section class="strip" aria-label="Сервіси, з якими працюємо">
+    <div class="wrap">
+      <span class="mono">ПРАЦЮЄМО З:</span>
+      <span>Telegram</span><span>Instagram</span><span>Viber</span><span>WhatsApp</span><span>Google Таблиці</span><span>KeyCRM</span><span>Нова пошта</span><span>n8n</span><span>Make</span>
+    </div>
+  </section>
+
+  <!-- PAINS -->
+  <section class="wrap stack" style="padding:104px 24px 24px;gap:40px">
+    <h2>Знайомо?</h2>
+    <div class="grid-cards">
+      <div class="card"><span class="mono" style="color:var(--muted-2)">01</span><h3>Заявки ввечері губляться</h3><p>Клієнт написав о 22:00, а відповідь отримав зранку. На той час він уже купив у конкурента.</p></div>
+      <div class="card"><span class="mono" style="color:var(--muted-2)">02</span><h3>Ті самі питання щодня</h3><p>«Скільки коштує?», «Коли є вільний час?», «Де моє замовлення?». Менеджер витрачає години на однакові відповіді.</p></div>
+      <div class="card"><span class="mono" style="color:var(--muted-2)">03</span><h3>Дані вручну між таблицями</h3><p>Скопіювати з Instagram у таблицю, з таблиці в CRM, з CRM у накладну. Довго, і рано чи пізно з’являються помилки.</p></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="wrap stack section" style="gap:40px;padding-top:80px">
+    <div class="stack" style="gap:14px;max-width:720px">
+      <h2>Кого поставимо на зміну</h2>
+      <p class="lead">Чотири напрями, з яких складається автоматизація під ваш бізнес.</p>
+    </div>
+    <div class="grid-cards services">
+      <div class="card dark">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></svg>
+        <h3>ШІ-асистенти в месенджерах</h3>
+        <p>Бот у Telegram, Instagram чи Viber, який відповідає на питання, записує клієнтів, приймає замовлення і передає складні розмови живій людині.</p>
+      </div>
+      <div class="card">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></svg>
+        <h3>Заявки та CRM</h3>
+        <p>Усі заявки з сайту, соцмереж і реклами автоматично потрапляють у CRM. Бот уточнює потребу, а менеджер отримує вже «теплого» клієнта.</p>
+      </div>
+      <div class="card">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 6h9M6.3 8.2l4.4 7.6M17.7 8.2l-4.4 7.6"/></svg>
+        <h3>Автоматизація процесів</h3>
+        <p>Сценарії в n8n і Make: синхронізація таблиць, звіти, нагадування, обробка документів і рахунків. Те, що зараз роблять руками, відбувається само.</p>
+      </div>
+      <div class="card">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>
+        <h3>Інтеграції на замовлення</h3>
+        <p>Коли готових рішень не вистачає, пишемо власний код: з’єднуємо сервіси, у яких немає стандартної інтеграції, і будуємо складну логіку.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how" class="how section">
+    <div class="wrap stack" style="gap:48px">
+      <h2>Як заступаємо на зміну</h2>
+      <div class="steps">
+        <div class="step"><span class="mono">КРОК 1</span><h3>Аудит</h3><p>Розбираємо, як зараз ідуть заявки й процеси, і знаходимо, де губляться час і клієнти.</p></div>
+        <div class="step"><span class="mono">КРОК 2</span><h3>План і ціна</h3><p>Показуємо схему автоматизації, терміни та фіксовану вартість ще до старту робіт.</p></div>
+        <div class="step"><span class="mono">КРОК 3</span><h3>Запуск</h3><p>Налаштовуємо, тестуємо на реальних заявках і навчаємо вашу команду.</p></div>
+        <div class="step"><span class="mono">КРОК 4</span><h3>Супровід</h3><p>Стежимо, щоб усе працювало, виправляємо збої та доробляємо, коли бізнес росте.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASES: поки немає кейсів, додайте атрибут hidden до цієї секції: <section id="cases" hidden ...> -->
+  <section id="cases" class="wrap stack" style="padding:104px 24px 72px;gap:40px">
+    <div class="stack" style="gap:14px;max-width:720px">
+      <h2>Звіти зі змін</h2>
+      <p class="lead">Реальні проєкти: проблема, рішення, результат у цифрах.</p>
+    </div>
+    <div class="grid-cards">
+      <div class="card" style="gap:16px"><span class="pill" style="align-self:flex-start;background:var(--ground-2)">[СФЕРА БІЗНЕСУ]</span><h3>[Назва кейсу 1]</h3><p><strong>Проблема:</strong> [що боліло]</p><p><strong>Рішення:</strong> [що зробили]</p><p class="case-result" style="color:var(--ink)">[РЕЗУЛЬТАТ]</p></div>
+      <div class="card" style="gap:16px"><span class="pill" style="align-self:flex-start;background:var(--ground-2)">[СФЕРА БІЗНЕСУ]</span><h3>[Назва кейсу 2]</h3><p><strong>Проблема:</strong> [що боліло]</p><p><strong>Рішення:</strong> [що зробили]</p><p class="case-result" style="color:var(--ink)">[РЕЗУЛЬТАТ]</p></div>
+      <div class="card" style="gap:16px"><span class="pill" style="align-self:flex-start;background:var(--ground-2)">[СФЕРА БІЗНЕСУ]</span><h3>[Назва кейсу 3]</h3><p><strong>Проблема:</strong> [що боліло]</p><p><strong>Рішення:</strong> [що зробили]</p><p class="case-result" style="color:var(--ink)">[РЕЗУЛЬТАТ]</p></div>
+    </div>
+  </section>
+
+  <!-- PRICES -->
+  <section id="prices" class="wrap stack" style="padding:32px 24px 104px;gap:40px">
+    <h2>Скільки коштує</h2>
+    <div class="grid-cards">
+      <div class="card" style="padding:32px;border-radius:24px;gap:14px"><h3 style="font-size:20px">Аудит</h3><p class="price" style="color:var(--ink)">[ЦІНА] грн</p><p>Розбір процесів і карта автоматизації. Ви отримуєте план, навіть якщо далі не працюватимете з нами.</p></div>
+      <div class="card dark" style="padding:32px;border-radius:24px;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="font-size:20px">Запуск під ключ</h3><span class="pill" style="background:var(--accent);color:var(--ink)">основне</span></div>
+        <p class="price" style="color:var(--ground)">від [ЦІНА] грн</p><p>Бот, інтеграції або сценарій під вашу задачу. Фіксована ціна, відома до старту.</p>
+      </div>
+      <div class="card" style="padding:32px;border-radius:24px;gap:14px"><h3 style="font-size:20px">Супровід</h3><p class="price" style="color:var(--ink)">[ЦІНА] грн/міс</p><p>Моніторинг, виправлення збоїв, дрібні доопрацювання. Робот завжди на зміні.</p></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section style="border-top:1px solid var(--line)">
+    <div class="wrap faq section">
+      <h2>Часті питання</h2>
+      <div class="faq-list">
+        <details open><summary>А якщо бот не знає відповіді?</summary><p>Він передає розмову живому менеджеру, і клієнт не застрягає в діалозі з роботом.</p></details>
+        <details><summary>Чи треба щось змінювати в нашій роботі?</summary><p>Мінімально. Ми підлаштовуємось під сервіси, якими ви вже користуєтесь, а не змушуємо переходити на нові.</p></details>
+        <details><summary>Скільки триває запуск?</summary><p>Простий бот: [ТЕРМІН]. Складна інтеграція: [ТЕРМІН]. Точний термін називаємо після аудиту.</p></details>
+        <details><summary>Де зберігаються дані?</summary><p>У ваших сервісах. Для бізнесів із підвищеними вимогами до безпеки можемо розгорнути автоматизацію на вашому власному сервері.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact section">
+    <div class="wrap contact-inner">
+      <div class="contact-copy stack">
+        <h2>Поставимо робота на зміну?</h2>
+        <p>Розкажіть, що забирає найбільше часу. Ми зв’яжемося з вами й безкоштовно підкажемо, що з цього можна автоматизувати.</p>
+        <div class="contacts stack">
+          <span>Telegram: [@НІК]</span>
+          <span>Телефон: [НОМЕР]</span>
+          <span>Email: [EMAIL]</span>
+        </div>
+      </div>
+
+      <form id="lead-form" novalidate>
+        <div class="field">
+          <label for="f-name">Ім’я <span class="req" aria-hidden="true">*</span></label>
+          <input id="f-name" name="name" type="text" autocomplete="name" maxlength="100" required placeholder="Як до вас звертатися">
+        </div>
+        <div class="field">
+          <label for="f-contact">Телефон або Telegram <span class="req" aria-hidden="true">*</span></label>
+          <input id="f-contact" name="contact" type="text" autocomplete="tel" maxlength="100" required placeholder="+380… або @нік">
+        </div>
+        <div class="field">
+          <label for="f-biz">Сфера бізнесу</label>
+          <input id="f-biz" name="business" type="text" maxlength="150" placeholder="Салон, магазин, клініка…">
+        </div>
+        <div class="field">
+          <label for="f-task">Що хочете автоматизувати?</label>
+          <textarea id="f-task" name="task" rows="3" maxlength="2000" placeholder="Коротко опишіть задачу"></textarea>
+        </div>
+        <!-- пастка для спам-ботів: люди це поле не бачать -->
+        <div class="hp" aria-hidden="true"><label for="f-web">Сайт</label><input id="f-web" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <button type="submit" class="btn btn-accent" id="lead-submit">Надіслати заявку</button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        <p class="form-note">Натискаючи кнопку, ви погоджуєтесь, що ми зв’яжемося з вами щодо заявки.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="logo-text">Робот на зміні</span>
+    <span>Автоматизація бізнес-процесів і ШІ-боти · Україна</span>
+    <span>© <span id="year">2026</span></span>
+  </div>
+</footer>
+
+<script>
+  // ▼▼▼ ВСТАВТЕ СЮДИ АДРЕСУ СВОГО CLOUDFLARE WORKER (див. ІНСТРУКЦІЯ.md) ▼▼▼
+  const LEAD_ENDPOINT = 'https://YOUR-WORKER.YOUR-NAME.workers.dev';
+  // ▲▲▲
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const form = document.getElementById('lead-form');
+  const statusEl = document.getElementById('form-status');
+  const submitBtn = document.getElementById('lead-submit');
+
+  function setStatus(text, kind) {
+    statusEl.textContent = text;
+    statusEl.className = 'form-status' + (kind ? ' ' + kind : '');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.name = (data.name || '').trim();
+    data.contact = (data.contact || '').trim();
+
+    if (!data.name || !data.contact) {
+      setStatus('Будь ласка, вкажіть ім’я та телефон або Telegram.', 'err');
+      (data.name ? form.contact : form.name).focus();
+      return;
+    }
+    if (LEAD_ENDPOINT.includes('YOUR-WORKER')) {
+      setStatus('Форму ще не підключено: вкажіть адресу Worker у коді сторінки.', 'err');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Надсилаємо…';
+    setStatus('');
+    try {
+      const res = await fetch(LEAD_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, page: location.href })
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'send_failed');
+      form.reset();
+      setStatus('Дякуємо! Заявку отримано, ми скоро з вами зв’яжемося.', 'ok');
+    } catch (err) {
+      setStatus('Не вдалося надіслати. Спробуйте ще раз або напишіть нам у Telegram.', 'err');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Надіслати заявку';
+    }
+  });
+</script>
+</body>
+</html>
